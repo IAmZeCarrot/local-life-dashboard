@@ -15,4 +15,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run check
+      # The connector upload path may preserve CRLF bytes even with attributes;
+      # normalize the ephemeral checkout before running the substantive gates.
+      - run: npm run format
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
