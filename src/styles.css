@@ -180,7 +180,7 @@ select {
   padding: 0.65rem 0.7rem;
   text-align: left;
 }
-.filters button[aria-pressed='true'] {
+.filters button[aria-pressed="true"] {
   background: #dce0cd;
   font-weight: 700;
 }
