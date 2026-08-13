@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   createItem,
   dueState,
@@ -6,23 +6,23 @@ import {
   matches,
   parseImport,
   saveData,
-} from './data';
-import type { DashboardData, Filter, Item, Kind } from './types';
-import './styles.css';
+} from "./data";
+import type { DashboardData, Filter, Item, Kind } from "./types";
+import "./styles.css";
 
 const filters: { value: Filter; label: string }[] = [
-  { value: 'all', label: 'Everything' },
-  { value: 'task', label: 'Tasks' },
-  { value: 'note', label: 'Notes' },
-  { value: 'bookmark', label: 'Bookmarks' },
-  { value: 'reminder', label: 'Reminders' },
+  { value: "all", label: "Everything" },
+  { value: "task", label: "Tasks" },
+  { value: "note", label: "Notes" },
+  { value: "bookmark", label: "Bookmarks" },
+  { value: "reminder", label: "Reminders" },
 ];
 
 export default function App() {
   const [data, setData] = useState<DashboardData>(() => loadData(localStorage));
-  const [filter, setFilter] = useState<Filter>('all');
-  const [query, setQuery] = useState('');
-  const [notice, setNotice] = useState('');
+  const [filter, setFilter] = useState<Filter>("all");
+  const [query, setQuery] = useState("");
+  const [notice, setNotice] = useState("");
   const [showForm, setShowForm] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -32,14 +32,14 @@ export default function App() {
     () =>
       data.items.filter(
         (item) =>
-          (filter === 'all' || item.kind === filter) && matches(item, query),
+          (filter === "all" || item.kind === filter) && matches(item, query),
       ),
     [data.items, filter, query],
   );
   const activeTasks = data.items.filter(
-    (item) => item.kind === 'task' && !item.completed,
+    (item) => item.kind === "task" && !item.completed,
   ).length;
-  const dueSoon = data.items.filter((item) => dueState(item) !== 'none').length;
+  const dueSoon = data.items.filter((item) => dueState(item) !== "none").length;
 
   function add(item: Item) {
     setData((current) => ({ ...current, items: [item, ...current.items] }));
@@ -59,25 +59,25 @@ export default function App() {
   }
 
   function remove(id: string) {
-    if (!confirm('Remove this item from this device?')) return;
+    if (!confirm("Remove this item from this device?")) return;
     setData((current) => ({
       ...current,
       items: current.items.filter((item) => item.id !== id),
     }));
-    setNotice('Item removed.');
+    setNotice("Item removed.");
   }
 
   function exportData() {
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
+      type: "application/json",
     });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `local-life-dashboard-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setNotice('Export downloaded.');
+    setNotice("Export downloaded.");
   }
 
   async function importData(file: File) {
@@ -90,11 +90,11 @@ export default function App() {
       )
         return;
       setData(imported);
-      setNotice('Import complete.');
+      setNotice("Import complete.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : 'Import failed.');
+      setNotice(error instanceof Error ? error.message : "Import failed.");
     } finally {
-      if (fileInput.current) fileInput.current.value = '';
+      if (fileInput.current) fileInput.current.value = "";
     }
   }
 
@@ -164,7 +164,7 @@ export default function App() {
               >
                 {item.label}
                 <span>
-                  {item.value === 'all'
+                  {item.value === "all"
                     ? data.items.length
                     : data.items.filter((entry) => entry.kind === item.value)
                         .length}
@@ -216,12 +216,12 @@ function ItemCard({
 }) {
   const due = dueState(item);
   return (
-    <article className={`item-card ${item.completed ? 'completed' : ''}`}>
+    <article className={`item-card ${item.completed ? "completed" : ""}`}>
       <div className="item-top">
         <span className={`kind kind-${item.kind}`}>{item.kind}</span>
-        {due !== 'none' && (
+        {due !== "none" && (
           <span className={`due ${due}`}>
-            {due === 'overdue' ? 'Overdue' : 'Due soon'}
+            {due === "overdue" ? "Overdue" : "Due soon"}
           </span>
         )}
       </div>
@@ -235,8 +235,8 @@ function ItemCard({
       {item.dueAt && (
         <time dateTime={item.dueAt}>
           {new Intl.DateTimeFormat(undefined, {
-            dateStyle: 'medium',
-            timeStyle: 'short',
+            dateStyle: "medium",
+            timeStyle: "short",
           }).format(new Date(item.dueAt))}
         </time>
       )}
@@ -248,11 +248,11 @@ function ItemCard({
         </ul>
       )}
       <div className="item-actions">
-        {(item.kind === 'task' || item.kind === 'reminder') && (
+        {(item.kind === "task" || item.kind === "reminder") && (
           <button
             onClick={() => onUpdate(item.id, { completed: !item.completed })}
           >
-            {item.completed ? 'Reopen' : 'Complete'}
+            {item.completed ? "Reopen" : "Complete"}
           </button>
         )}
         <button className="danger" onClick={() => onRemove(item.id)}>
@@ -270,7 +270,7 @@ function ItemForm({
   onClose: () => void;
   onSubmit: (item: Item) => void;
 }) {
-  const [kind, setKind] = useState<Kind>('task');
+  const [kind, setKind] = useState<Kind>("task");
   return (
     <div
       className="modal-backdrop"
@@ -296,16 +296,16 @@ function ItemForm({
             const form = new FormData(event.currentTarget);
             const field = (name: string): string => {
               const value = form.get(name);
-              return typeof value === 'string' ? value : '';
+              return typeof value === "string" ? value : "";
             };
             onSubmit(
               createItem({
                 kind,
-                title: field('title'),
-                details: field('details'),
-                tags: field('tags'),
-                dueAt: field('dueAt'),
-                url: field('url'),
+                title: field("title"),
+                details: field("details"),
+                tags: field("tags"),
+                dueAt: field("dueAt"),
+                url: field("url"),
               }),
             );
           }}
@@ -330,13 +330,13 @@ function ItemForm({
             Details
             <textarea name="details" rows={4} maxLength={2000} />
           </label>
-          {kind === 'bookmark' && (
+          {kind === "bookmark" && (
             <label>
               Web address
               <input name="url" type="url" required placeholder="https://" />
             </label>
           )}
-          {(kind === 'task' || kind === 'reminder') && (
+          {(kind === "task" || kind === "reminder") && (
             <label>
               Due date and time
               <input name="dueAt" type="datetime-local" />

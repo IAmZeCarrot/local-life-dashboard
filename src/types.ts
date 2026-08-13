@@ -1,4 +1,4 @@
-export type Kind = 'task' | 'note' | 'bookmark' | 'reminder';
+export type Kind = "task" | "note" | "bookmark" | "reminder";
 
 export type Item = {
   id: string;
@@ -18,4 +18,4 @@ export type DashboardData = {
   items: Item[];
 };
 
-export type Filter = 'all' | Kind;
+export type Filter = "all" | Kind;
