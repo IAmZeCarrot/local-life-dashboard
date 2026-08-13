@@ -4,7 +4,9 @@ import {
   dueState,
   loadData,
   matches,
+  applyMerge,
   parseImport,
+  previewMerge,
   saveData,
 } from "./data";
 import type { DashboardData, Filter, Item, Kind } from "./types";
@@ -83,14 +85,20 @@ export default function App() {
   async function importData(file: File) {
     try {
       const imported = parseImport(await file.text());
-      if (
-        !confirm(
-          `Replace local data with ${imported.items.length} imported item(s)?`,
-        )
-      )
+      const preview = previewMerge(data, imported);
+      const summary = `${preview.added.length} new, ${preview.unchanged.length} unchanged, ${preview.conflicts.length} conflict(s)`;
+      let replaceConflicts = false;
+      if (preview.conflicts.length > 0) {
+        replaceConflicts = confirm(
+          `Import preview: ${summary}. Choose OK to replace conflicting local items with imported versions, or Cancel to keep every local conflict.`,
+        );
+      } else if (!confirm(`Import preview: ${summary}. Add the new items?`)) {
         return;
-      setData(imported);
-      setNotice("Import complete.");
+      }
+      setData(applyMerge(data, preview, replaceConflicts));
+      setNotice(
+        `Import merged: ${preview.added.length} added; ${preview.conflicts.length} conflict(s) ${replaceConflicts ? "replaced" : "kept local"}.`,
+      );
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Import failed.");
     } finally {

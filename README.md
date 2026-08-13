@@ -16,7 +16,7 @@ In a supported desktop or mobile browser, use the browser's **Install app** opti
 - Filter by item type and see at-a-glance counts
 - Highlight overdue and next-24-hour items
 - Export a readable, versioned JSON backup
-- Validate imports before replacing local data
+- Preview imports, merge new records, and choose how to handle conflicts
 - Cache the application for offline use after the first successful visit
 - Responsive layout, keyboard focus styles, semantic labels, live status messages, and reduced-motion support
 
@@ -44,7 +44,7 @@ Data is stored in `localStorage` under `local-life-dashboard:v1`. Exported files
 { "version": 1, "items": [] }
 ```
 
-Imports are shape-checked and duplicate IDs are rejected. Importing replaces current device data only after confirmation. Export regularly if the information matters: clearing browser storage or resetting a browser profile can erase local data.
+Imports are shape-checked and duplicate IDs are rejected. The app previews new, unchanged, and conflicting records. New records merge in; conflicts keep the local version unless you explicitly choose the imported version. Export regularly if the information matters: clearing browser storage or resetting a browser profile can erase local data.
 
 The service worker caches same-origin application files only. It does not send dashboard data anywhere. External bookmark pages are opened only when you choose them.
 
@@ -65,7 +65,6 @@ This runs formatting checks, ESLint, strict TypeScript checking, unit/component 
 - Data does not synchronize between browsers or devices.
 - Browser storage quotas and retention policies vary. This is not a replacement for an external backup.
 - Reminders are visually highlighted when the app is open; v1 does not send operating-system notifications.
-- Import replaces current data rather than merging it, preventing silent duplication or conflict guesses.
 - The app has no recurring tasks, rich-text editor, attachment storage, or encrypted vault.
 
 ## License

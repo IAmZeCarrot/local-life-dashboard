@@ -112,3 +112,45 @@ export function dueState(
   if (due.getTime() < now.getTime()) return "overdue";
   return due.getTime() - now.getTime() <= 86_400_000 ? "upcoming" : "none";
 }
+
+
+export type MergePreview = {
+  added: Item[];
+  unchanged: Item[];
+  conflicts: { current: Item; imported: Item }[];
+};
+
+export function previewMerge(
+  current: DashboardData,
+  imported: DashboardData,
+): MergePreview {
+  const currentById = new Map(current.items.map((item) => [item.id, item]));
+  const preview: MergePreview = { added: [], unchanged: [], conflicts: [] };
+  for (const item of imported.items) {
+    const existing = currentById.get(item.id);
+    if (!existing) preview.added.push(item);
+    else if (JSON.stringify(existing) === JSON.stringify(item))
+      preview.unchanged.push(item);
+    else preview.conflicts.push({ current: existing, imported: item });
+  }
+  return preview;
+}
+
+export function applyMerge(
+  current: DashboardData,
+  preview: MergePreview,
+  replaceConflicts: boolean,
+): DashboardData {
+  const replacements = new Map(
+    replaceConflicts
+      ? preview.conflicts.map(({ imported }) => [imported.id, imported])
+      : [],
+  );
+  return {
+    version: 1,
+    items: [
+      ...preview.added,
+      ...current.items.map((item) => replacements.get(item.id) ?? item),
+    ],
+  };
+}
