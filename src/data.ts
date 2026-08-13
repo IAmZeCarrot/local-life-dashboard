@@ -1,10 +1,10 @@
-import type { DashboardData, Item, Kind } from './types';
+import type { DashboardData, Item, Kind } from "./types";
 
-export const STORAGE_KEY = 'local-life-dashboard:v1';
+export const STORAGE_KEY = "local-life-dashboard:v1";
 
 export const emptyData = (): DashboardData => ({ version: 1, items: [] });
 
-export function loadData(storage: Pick<Storage, 'getItem'>): DashboardData {
+export function loadData(storage: Pick<Storage, "getItem">): DashboardData {
   const raw = storage.getItem(STORAGE_KEY);
   if (!raw) return emptyData();
   try {
@@ -15,7 +15,7 @@ export function loadData(storage: Pick<Storage, 'getItem'>): DashboardData {
 }
 
 export function saveData(
-  storage: Pick<Storage, 'setItem'>,
+  storage: Pick<Storage, "setItem">,
   data: DashboardData,
 ): void {
   storage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -29,7 +29,7 @@ export function parseImport(raw: string): DashboardData {
     !Array.isArray(candidate.items)
   ) {
     throw new Error(
-      'This file is not a supported Local Life Dashboard export.',
+      "This file is not a supported Local Life Dashboard export.",
     );
   }
   const ids = new Set<string>();
@@ -43,26 +43,26 @@ export function parseImport(raw: string): DashboardData {
 
 function validateItem(value: unknown, index: number): Item {
   if (!isRecord(value)) throw new Error(`Item ${index + 1} is invalid.`);
-  const kinds: Kind[] = ['task', 'note', 'bookmark', 'reminder'];
+  const kinds: Kind[] = ["task", "note", "bookmark", "reminder"];
   if (
-    typeof value.id !== 'string' ||
+    typeof value.id !== "string" ||
     !kinds.includes(value.kind as Kind) ||
-    typeof value.title !== 'string' ||
-    typeof value.details !== 'string' ||
+    typeof value.title !== "string" ||
+    typeof value.details !== "string" ||
     !Array.isArray(value.tags) ||
-    !value.tags.every((tag) => typeof tag === 'string') ||
-    typeof value.createdAt !== 'string' ||
-    typeof value.updatedAt !== 'string' ||
-    typeof value.completed !== 'boolean' ||
-    !(typeof value.dueAt === 'string' || value.dueAt === null) ||
-    !(typeof value.url === 'string' || value.url === null)
+    !value.tags.every((tag) => typeof tag === "string") ||
+    typeof value.createdAt !== "string" ||
+    typeof value.updatedAt !== "string" ||
+    typeof value.completed !== "boolean" ||
+    !(typeof value.dueAt === "string" || value.dueAt === null) ||
+    !(typeof value.url === "string" || value.url === null)
   )
     throw new Error(`Item ${index + 1} has an invalid shape.`);
   return value as Item;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
+  return typeof value === "object" && value !== null;
 }
 
 export function createItem(
@@ -81,9 +81,9 @@ export function createItem(
     id: crypto.randomUUID(),
     kind: input.kind,
     title: input.title.trim(),
-    details: input.details?.trim() ?? '',
-    tags: (input.tags ?? '')
-      .split(',')
+    details: input.details?.trim() ?? "",
+    tags: (input.tags ?? "")
+      .split(",")
       .map((tag) => tag.trim())
       .filter(Boolean),
     dueAt: input.dueAt ? new Date(input.dueAt).toISOString() : null,
@@ -97,8 +97,8 @@ export function createItem(
 export function matches(item: Item, query: string): boolean {
   const normalized = query.trim().toLocaleLowerCase();
   if (!normalized) return true;
-  return [item.title, item.details, item.url ?? '', ...item.tags]
-    .join(' ')
+  return [item.title, item.details, item.url ?? "", ...item.tags]
+    .join(" ")
     .toLocaleLowerCase()
     .includes(normalized);
 }
@@ -106,9 +106,9 @@ export function matches(item: Item, query: string): boolean {
 export function dueState(
   item: Item,
   now = new Date(),
-): 'none' | 'upcoming' | 'overdue' {
-  if (!item.dueAt || item.completed) return 'none';
+): "none" | "upcoming" | "overdue" {
+  if (!item.dueAt || item.completed) return "none";
   const due = new Date(item.dueAt);
-  if (due.getTime() < now.getTime()) return 'overdue';
-  return due.getTime() - now.getTime() <= 86_400_000 ? 'upcoming' : 'none';
+  if (due.getTime() < now.getTime()) return "overdue";
+  return due.getTime() - now.getTime() <= 86_400_000 ? "upcoming" : "none";
 }
