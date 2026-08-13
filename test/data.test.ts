@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  applyMerge,
   createItem,
   dueState,
   emptyData,
   loadData,
   matches,
   parseImport,
+  previewMerge,
   saveData,
   STORAGE_KEY,
 } from "../src/data";
@@ -49,6 +51,24 @@ describe("local data", () => {
     expect(item.tags).toEqual(["home", "spring"]);
     expect(matches(item, "SPRING")).toBe(true);
     expect(matches(item, "missing")).toBe(false);
+  });
+
+  it("previews imports and never replaces conflicts without an explicit choice", () => {
+    const current = createItem(
+      { kind: "note", title: "Local version" },
+      new Date("2026-01-01T00:00:00Z"),
+    );
+    const conflict = { ...current, title: "Imported version" };
+    const added = { ...current, id: "new-id", title: "New item" };
+    const base = { version: 1 as const, items: [current] };
+    const preview = previewMerge(base, {
+      version: 1,
+      items: [conflict, added],
+    });
+    expect(preview.added).toEqual([added]);
+    expect(preview.conflicts).toHaveLength(1);
+    expect(applyMerge(base, preview, false).items).toEqual([added, current]);
+    expect(applyMerge(base, preview, true).items).toEqual([added, conflict]);
   });
 
   it("classifies due dates", () => {
