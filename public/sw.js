@@ -1,7 +1,10 @@
-const CACHE_NAME = "local-life-dashboard-v1";
+const CACHE_NAME = "local-life-dashboard-v2";
+const APP_SHELL = self.registration.scope;
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(["/"])));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll([APP_SHELL])),
+  );
   self.skipWaiting();
 });
 
@@ -38,7 +41,7 @@ self.addEventListener("fetch", (event) => {
                 .then((cache) => cache.put(event.request, response.clone()));
             return response;
           })
-          .catch(() => caches.match("/")),
+          .catch(() => caches.match(APP_SHELL)),
     ),
   );
 });
