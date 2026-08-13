@@ -1,0 +1,9 @@
+{
+  "name": "Local Life Dashboard",
+  "short_name": "Life Dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2efe6",
+  "theme_color": "#172119",
+  "description": "A private, offline-first dashboard for everyday information."
+}
