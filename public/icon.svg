@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Local Life Dashboard</title>
+  <rect width="512" height="512" rx="112" fill="#172119"/>
+  <path d="M128 156c0-15.5 12.5-28 28-28h200c15.5 0 28 12.5 28 28v200c0 15.5-12.5 28-28 28H156c-15.5 0-28-12.5-28-28V156Z" fill="#f2efe6"/>
+  <path d="M176 208h160M176 256h104M176 304h136" fill="none" stroke="#2f6b4f" stroke-linecap="round" stroke-width="24"/>
+  <circle cx="336" cy="304" r="24" fill="#d3864b"/>
+</svg>
