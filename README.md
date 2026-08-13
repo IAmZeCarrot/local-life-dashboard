@@ -2,6 +2,12 @@
 
 A polished, offline-first home for tasks, notes, bookmarks, and reminders. Everything stays in your browser on the current device: there are no accounts, servers, cloud services, analytics, ads, or paid APIs.
 
+## Try it
+
+Open the [live dashboard](https://iamzecarrot.github.io/local-life-dashboard/). No account or setup is required. After the first successful visit, the app shell remains available offline.
+
+In a supported desktop or mobile browser, use the browser's **Install app** option to add the dashboard to your Start menu, home screen, or app launcher.
+
 ## Features
 
 - Add tasks, notes, bookmarks, and dated reminders
@@ -41,6 +47,10 @@ Data is stored in `localStorage` under `local-life-dashboard:v1`. Exported files
 Imports are shape-checked and duplicate IDs are rejected. Importing replaces current device data only after confirmation. Export regularly if the information matters: clearing browser storage or resetting a browser profile can erase local data.
 
 The service worker caches same-origin application files only. It does not send dashboard data anywhere. External bookmark pages are opened only when you choose them.
+
+## Deployment
+
+Changes merged into `main` are checked, built with the repository subpath, and deployed through the GitHub Pages Actions workflow. The repository's Pages source must be set to **GitHub Actions**.
 
 ## Development
 
